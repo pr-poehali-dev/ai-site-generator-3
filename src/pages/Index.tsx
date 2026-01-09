@@ -4,12 +4,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import { analyzeSiteDescription, generateFullHTML } from '@/lib/siteGenerator';
 
 interface GeneratedSite {
   id: string;
   description: string;
   preview: string;
   timestamp: Date;
+  htmlCode: string;
 }
 
 const Index = () => {
@@ -32,116 +34,44 @@ const Index = () => {
     setIsGenerating(true);
 
     setTimeout(() => {
+      const siteConfig = analyzeSiteDescription(description);
+      const htmlCode = generateFullHTML(siteConfig);
+      
       const newSite: GeneratedSite = {
         id: Date.now().toString(),
         description: description,
-        preview: generatePreviewHTML(description),
+        preview: htmlCode,
         timestamp: new Date(),
+        htmlCode: htmlCode,
       };
 
       setGeneratedSites((prev) => [newSite, ...prev]);
       setCurrentPreview(newSite.preview);
       setIsGenerating(false);
+      setDescription('');
       
       toast({
         title: 'Сайт создан!',
-        description: 'Ваш сайт успешно сгенерирован',
+        description: 'Ваш полноценный сайт готов к использованию',
       });
-    }, 2000);
+    }, 1500);
   };
 
-  const generatePreviewHTML = (desc: string): string => {
-    const lowerDesc = desc.toLowerCase();
+  const handleDownload = (htmlCode: string, siteId: string) => {
+    const blob = new Blob([htmlCode], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `website-${siteId}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
     
-    if (lowerDesc.includes('магазин') || lowerDesc.includes('товар')) {
-      return `
-        <div class="min-h-screen bg-white">
-          <header class="border-b">
-            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-              <h1 class="text-2xl font-bold text-indigo-600">Магазин</h1>
-              <nav class="flex gap-6">
-                <a href="#" class="text-gray-700 hover:text-indigo-600">Каталог</a>
-                <a href="#" class="text-gray-700 hover:text-indigo-600">О нас</a>
-                <a href="#" class="text-gray-700 hover:text-indigo-600">Корзина</a>
-              </nav>
-            </div>
-          </header>
-          <main class="container mx-auto px-6 py-12">
-            <h2 class="text-4xl font-bold mb-8">Популярные товары</h2>
-            <div class="grid grid-cols-3 gap-6">
-              <div class="border rounded-xl p-6 hover:shadow-lg transition">
-                <div class="h-48 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-lg mb-4"></div>
-                <h3 class="font-semibold mb-2">Товар 1</h3>
-                <p class="text-gray-600 mb-4">Описание товара</p>
-                <button class="w-full bg-indigo-600 text-white py-2 rounded-lg">Купить</button>
-              </div>
-              <div class="border rounded-xl p-6 hover:shadow-lg transition">
-                <div class="h-48 bg-gradient-to-br from-pink-400 to-purple-500 rounded-lg mb-4"></div>
-                <h3 class="font-semibold mb-2">Товар 2</h3>
-                <p class="text-gray-600 mb-4">Описание товара</p>
-                <button class="w-full bg-indigo-600 text-white py-2 rounded-lg">Купить</button>
-              </div>
-              <div class="border rounded-xl p-6 hover:shadow-lg transition">
-                <div class="h-48 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-lg mb-4"></div>
-                <h3 class="font-semibold mb-2">Товар 3</h3>
-                <p class="text-gray-600 mb-4">Описание товара</p>
-                <button class="w-full bg-indigo-600 text-white py-2 rounded-lg">Купить</button>
-              </div>
-            </div>
-          </main>
-        </div>
-      `;
-    }
-
-    if (lowerDesc.includes('портфолио') || lowerDesc.includes('резюме')) {
-      return `
-        <div class="min-h-screen bg-white">
-          <header class="border-b">
-            <div class="container mx-auto px-6 py-6 text-center">
-              <h1 class="text-4xl font-bold mb-2">Иван Иванов</h1>
-              <p class="text-gray-600">Веб-разработчик</p>
-            </div>
-          </header>
-          <main class="container mx-auto px-6 py-12">
-            <section class="mb-16">
-              <h2 class="text-3xl font-bold mb-6">О себе</h2>
-              <p class="text-gray-700 text-lg">Создаю современные веб-приложения с фокусом на пользовательский опыт</p>
-            </section>
-            <section>
-              <h2 class="text-3xl font-bold mb-6">Проекты</h2>
-              <div class="grid grid-cols-2 gap-8">
-                <div class="border rounded-xl overflow-hidden hover:shadow-lg transition">
-                  <div class="h-64 bg-gradient-to-br from-purple-400 to-indigo-600"></div>
-                  <div class="p-6">
-                    <h3 class="text-xl font-semibold mb-2">Проект 1</h3>
-                    <p class="text-gray-600">Описание проекта и технологии</p>
-                  </div>
-                </div>
-                <div class="border rounded-xl overflow-hidden hover:shadow-lg transition">
-                  <div class="h-64 bg-gradient-to-br from-pink-400 to-purple-600"></div>
-                  <div class="p-6">
-                    <h3 class="text-xl font-semibold mb-2">Проект 2</h3>
-                    <p class="text-gray-600">Описание проекта и технологии</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </main>
-        </div>
-      `;
-    }
-
-    return `
-      <div class="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 flex items-center justify-center">
-        <div class="text-center">
-          <h1 class="text-6xl font-bold mb-6 text-indigo-900">Добро пожаловать</h1>
-          <p class="text-2xl text-gray-700 mb-8">${desc}</p>
-          <button class="bg-indigo-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-indigo-700 transition">
-            Начать
-          </button>
-        </div>
-      </div>
-    `;
+    toast({
+      title: 'Скачивание началось!',
+      description: 'HTML файл сохранён на ваш компьютер',
+    });
   };
 
   return (
@@ -198,13 +128,17 @@ const Index = () => {
           </Card>
 
           <div className="space-y-6">
-            {currentPreview ? (
+            {currentPreview && generatedSites.length > 0 ? (
               <Card className="p-6 animate-scale-in shadow-lg">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold">Превью сайта</h3>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleDownload(generatedSites[0].htmlCode, generatedSites[0].id)}
+                  >
                     <Icon name="Download" size={16} className="mr-2" />
-                    Скачать
+                    Скачать HTML
                   </Button>
                 </div>
                 <div className="border rounded-lg overflow-hidden bg-white shadow-inner">
@@ -234,8 +168,7 @@ const Index = () => {
               {generatedSites.map((site) => (
                 <Card
                   key={site.id}
-                  className="p-6 cursor-pointer hover:shadow-xl transition-all hover:scale-[1.02]"
-                  onClick={() => setCurrentPreview(site.preview)}
+                  className="p-6 hover:shadow-xl transition-all"
                 >
                   <div className="flex items-start gap-4 mb-4">
                     <div className="p-3 bg-primary/10 rounded-lg">
@@ -253,7 +186,10 @@ const Index = () => {
                       <p className="text-sm line-clamp-3">{site.description}</p>
                     </div>
                   </div>
-                  <div className="border rounded-md overflow-hidden bg-white h-32">
+                  <div 
+                    className="border rounded-md overflow-hidden bg-white h-32 cursor-pointer mb-4 hover:ring-2 hover:ring-primary transition"
+                    onClick={() => setCurrentPreview(site.preview)}
+                  >
                     <iframe
                       srcDoc={site.preview}
                       className="w-full h-full pointer-events-none scale-[0.3] origin-top-left"
@@ -261,6 +197,15 @@ const Index = () => {
                       title={`Preview ${site.id}`}
                     />
                   </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="w-full"
+                    onClick={() => handleDownload(site.htmlCode, site.id)}
+                  >
+                    <Icon name="Download" size={16} className="mr-2" />
+                    Скачать HTML
+                  </Button>
                 </Card>
               ))}
             </div>
