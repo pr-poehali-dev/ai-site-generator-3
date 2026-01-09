@@ -34,26 +34,40 @@ const Index = () => {
     setIsGenerating(true);
 
     setTimeout(() => {
-      const siteConfig = analyzeSiteDescription(description);
-      const htmlCode = generateFullHTML(siteConfig);
-      
-      const newSite: GeneratedSite = {
-        id: Date.now().toString(),
-        description: description,
-        preview: htmlCode,
-        timestamp: new Date(),
-        htmlCode: htmlCode,
-      };
+      try {
+        const siteConfig = analyzeSiteDescription(description);
+        console.log('Site config:', siteConfig);
+        
+        const htmlCode = generateFullHTML(siteConfig);
+        console.log('Generated HTML length:', htmlCode.length);
+        console.log('HTML preview:', htmlCode.substring(0, 200));
+        
+        const newSite: GeneratedSite = {
+          id: Date.now().toString(),
+          description: description,
+          preview: htmlCode,
+          timestamp: new Date(),
+          htmlCode: htmlCode,
+        };
 
-      setGeneratedSites((prev) => [newSite, ...prev]);
-      setCurrentPreview(newSite.preview);
-      setIsGenerating(false);
-      setDescription('');
-      
-      toast({
-        title: 'Сайт создан!',
-        description: 'Ваш полноценный сайт готов к использованию',
-      });
+        setGeneratedSites((prev) => [newSite, ...prev]);
+        setCurrentPreview(htmlCode);
+        setIsGenerating(false);
+        setDescription('');
+        
+        toast({
+          title: 'Сайт создан!',
+          description: 'Ваш полноценный сайт готов к использованию',
+        });
+      } catch (error) {
+        console.error('Error generating site:', error);
+        setIsGenerating(false);
+        toast({
+          title: 'Ошибка',
+          description: 'Не удалось сгенерировать сайт',
+          variant: 'destructive',
+        });
+      }
     }, 1500);
   };
 
