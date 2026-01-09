@@ -160,7 +160,6 @@ const Index = () => {
                     srcDoc={currentPreview}
                     className="w-full h-[400px]"
                     title="Preview"
-                    sandbox="allow-scripts allow-same-origin"
                   />
                 </div>
               </Card>
@@ -209,7 +208,6 @@ const Index = () => {
                       className="w-full h-full pointer-events-none scale-[0.3] origin-top-left"
                       style={{ width: '333%', height: '333%' }}
                       title={`Preview ${site.id}`}
-                      sandbox="allow-scripts allow-same-origin"
                     />
                   </div>
                   <Button 
