@@ -5,22 +5,34 @@ interface SiteConfig {
     primary: string;
     secondary: string;
     accent: string;
+    background: string;
+    text: string;
   };
   sections: string[];
+  style: 'modern' | 'minimal' | 'bold' | 'playful' | 'elegant' | 'dark';
+  interactive: boolean;
 }
 
 export const analyzeSiteDescription = (description: string): SiteConfig => {
   const lowerDesc = description.toLowerCase();
   
   const keywords = {
-    ecommerce: ['магазин', 'товар', 'продукт', 'купить', 'корзина', 'каталог'],
-    portfolio: ['портфолио', 'резюме', 'работы', 'проекты', 'cv'],
+    game: ['игра', 'game', 'викторина', 'квиз', 'играть', 'геймдев', 'аркада', 'головоломка', 'пазл'],
+    app: ['приложение', 'app', 'сервис', 'платформа', 'инструмент', 'калькулятор', 'конвертер'],
+    ecommerce: ['магазин', 'товар', 'продукт', 'купить', 'корзина', 'каталог', 'shop', 'store'],
+    portfolio: ['портфолио', 'резюме', 'работы', 'проекты', 'cv', 'portfolio'],
     landing: ['лендинг', 'landing', 'посадочная', 'продающий'],
-    blog: ['блог', 'статьи', 'новости', 'публикации'],
-    corporate: ['компания', 'о нас', 'услуги', 'команда'],
-    restaurant: ['ресторан', 'кафе', 'меню', 'еда', 'кухня'],
-    fitness: ['фитнес', 'спортзал', 'тренировки', 'спорт'],
-    education: ['курсы', 'обучение', 'школа', 'образование'],
+    blog: ['блог', 'статьи', 'новости', 'публикации', 'журнал'],
+    corporate: ['компания', 'о нас', 'услуги', 'команда', 'бизнес'],
+    restaurant: ['ресторан', 'кафе', 'меню', 'еда', 'кухня', 'доставка'],
+    fitness: ['фитнес', 'спортзал', 'тренировки', 'спорт', 'йога'],
+    education: ['курсы', 'обучение', 'школа', 'образование', 'университет'],
+    travel: ['туризм', 'путешествия', 'отель', 'туры', 'travel'],
+    music: ['музыка', 'концерт', 'группа', 'альбом', 'music'],
+    event: ['мероприятие', 'событие', 'конференция', 'встреча', 'event'],
+    realestate: ['недвижимость', 'квартиры', 'дома', 'аренда', 'продажа жилья'],
+    crypto: ['криптовалюта', 'блокчейн', 'nft', 'crypto', 'web3'],
+    startup: ['стартап', 'startup', 'инновации', 'технологии'],
   };
 
   let siteType = 'landing';
@@ -32,15 +44,19 @@ export const analyzeSiteDescription = (description: string): SiteConfig => {
   }
 
   const colorSchemes = {
-    синий: { primary: '#2563eb', secondary: '#3b82f6', accent: '#60a5fa' },
-    зеленый: { primary: '#16a34a', secondary: '#22c55e', accent: '#4ade80' },
-    фиолетовый: { primary: '#7c3aed', secondary: '#8b5cf6', accent: '#a78bfa' },
-    красный: { primary: '#dc2626', secondary: '#ef4444', accent: '#f87171' },
-    оранжевый: { primary: '#ea580c', secondary: '#f97316', accent: '#fb923c' },
-    розовый: { primary: '#db2777', secondary: '#ec4899', accent: '#f472b6' },
+    синий: { primary: '#2563eb', secondary: '#3b82f6', accent: '#60a5fa', background: '#ffffff', text: '#1f2937' },
+    голубой: { primary: '#0ea5e9', secondary: '#06b6d4', accent: '#22d3ee', background: '#ffffff', text: '#1f2937' },
+    зеленый: { primary: '#16a34a', secondary: '#22c55e', accent: '#4ade80', background: '#ffffff', text: '#1f2937' },
+    фиолетовый: { primary: '#7c3aed', secondary: '#8b5cf6', accent: '#a78bfa', background: '#ffffff', text: '#1f2937' },
+    красный: { primary: '#dc2626', secondary: '#ef4444', accent: '#f87171', background: '#ffffff', text: '#1f2937' },
+    оранжевый: { primary: '#ea580c', secondary: '#f97316', accent: '#fb923c', background: '#ffffff', text: '#1f2937' },
+    желтый: { primary: '#ca8a04', secondary: '#eab308', accent: '#facc15', background: '#ffffff', text: '#1f2937' },
+    розовый: { primary: '#db2777', secondary: '#ec4899', accent: '#f472b6', background: '#ffffff', text: '#1f2937' },
+    черный: { primary: '#f59e0b', secondary: '#fbbf24', accent: '#fcd34d', background: '#0f172a', text: '#f1f5f9' },
+    темный: { primary: '#6366f1', secondary: '#818cf8', accent: '#a5b4fc', background: '#111827', text: '#f9fafb' },
   };
 
-  let colors = { primary: '#8b5cf6', secondary: '#7c3aed', accent: '#a78bfa' };
+  let colors = { primary: '#8b5cf6', secondary: '#7c3aed', accent: '#a78bfa', background: '#ffffff', text: '#1f2937' };
   for (const [colorName, scheme] of Object.entries(colorSchemes)) {
     if (lowerDesc.includes(colorName)) {
       colors = scheme;
@@ -48,11 +64,33 @@ export const analyzeSiteDescription = (description: string): SiteConfig => {
     }
   }
 
+  const styleKeywords = {
+    modern: ['современный', 'модерн', 'modern', 'стильный'],
+    minimal: ['минимализм', 'минималистичный', 'простой', 'minimal', 'clean'],
+    bold: ['яркий', 'bold', 'смелый', 'выразительный', 'насыщенный'],
+    playful: ['игровой', 'веселый', 'playful', 'fun', 'детский'],
+    elegant: ['элегантный', 'elegant', 'изысканный', 'премиум'],
+    dark: ['темный', 'dark', 'черный', 'ночной'],
+  };
+
+  let style: 'modern' | 'minimal' | 'bold' | 'playful' | 'elegant' | 'dark' = 'modern';
+  for (const [styleName, words] of Object.entries(styleKeywords)) {
+    if (words.some(word => lowerDesc.includes(word))) {
+      style = styleName as typeof style;
+      break;
+    }
+  }
+
+  const interactive = lowerDesc.includes('игра') || lowerDesc.includes('game') || 
+                     lowerDesc.includes('интерактив') || lowerDesc.includes('interactive');
+
   return {
     title: extractTitle(description),
     description,
     colors,
     sections: getSectionsForType(siteType),
+    style,
+    interactive,
   };
 };
 
@@ -66,6 +104,8 @@ const extractTitle = (description: string): string => {
 
 const getSectionsForType = (type: string): string[] => {
   const sectionMap: Record<string, string[]> = {
+    game: ['game-hero', 'game-canvas', 'leaderboard', 'instructions'],
+    app: ['app-hero', 'app-interface', 'features', 'footer'],
     ecommerce: ['hero', 'products', 'features', 'footer'],
     portfolio: ['hero', 'about', 'projects', 'contact'],
     landing: ['hero', 'features', 'cta', 'footer'],
@@ -74,6 +114,12 @@ const getSectionsForType = (type: string): string[] => {
     restaurant: ['hero', 'menu', 'about', 'contact'],
     fitness: ['hero', 'programs', 'trainers', 'pricing'],
     education: ['hero', 'courses', 'teachers', 'pricing'],
+    travel: ['hero', 'destinations', 'tours', 'booking'],
+    music: ['music-hero', 'albums', 'events', 'contact'],
+    event: ['event-hero', 'schedule', 'speakers', 'register'],
+    realestate: ['hero', 'properties', 'search', 'contact'],
+    crypto: ['hero', 'features', 'tokenomics', 'roadmap'],
+    startup: ['hero', 'problem-solution', 'product', 'team', 'cta'],
   };
   
   return sectionMap[type] || ['hero', 'features', 'footer'];
@@ -81,6 +127,15 @@ const getSectionsForType = (type: string): string[] => {
 
 export const generateFullHTML = (config: SiteConfig): string => {
   const sections = config.sections.map(section => generateSection(section, config)).join('\n');
+  
+  const styleVariations = {
+    modern: 'font-family: Inter, -apple-system, sans-serif;',
+    minimal: 'font-family: "Helvetica Neue", Arial, sans-serif; letter-spacing: -0.02em;',
+    bold: 'font-family: "Arial Black", sans-serif; font-weight: 900;',
+    playful: 'font-family: "Comic Sans MS", cursive;',
+    elegant: 'font-family: "Georgia", serif; letter-spacing: 0.02em;',
+    dark: 'font-family: "Courier New", monospace;',
+  };
   
   return `
 <!DOCTYPE html>
@@ -105,8 +160,14 @@ export const generateFullHTML = (config: SiteConfig): string => {
   </script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    body { 
+      ${styleVariations[config.style]}
+      background-color: ${config.colors.background};
+      color: ${config.colors.text};
+    }
     .smooth-scroll { scroll-behavior: smooth; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-on-scroll { animation: fadeIn 0.6s ease-out; }
   </style>
 </head>
 <body class="smooth-scroll">
@@ -120,6 +181,16 @@ export const generateFullHTML = (config: SiteConfig): string => {
         if (target) target.scrollIntoView({ behavior: 'smooth' });
       });
     });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-on-scroll');
+        }
+      });
+    });
+    
+    document.querySelectorAll('section').forEach(section => observer.observe(section));
   </script>
 </body>
 </html>
@@ -129,6 +200,12 @@ export const generateFullHTML = (config: SiteConfig): string => {
 const generateSection = (type: string, config: SiteConfig): string => {
   const generators: Record<string, (config: SiteConfig) => string> = {
     hero: generateHero,
+    'game-hero': generateGameHero,
+    'game-canvas': generateGameCanvas,
+    'leaderboard': generateLeaderboard,
+    'instructions': generateInstructions,
+    'app-hero': generateAppHero,
+    'app-interface': generateAppInterface,
     products: generateProducts,
     features: generateFeatures,
     projects: generateProjects,
@@ -146,6 +223,22 @@ const generateSection = (type: string, config: SiteConfig): string => {
     courses: generateCourses,
     teachers: generateTeachers,
     categories: generateCategories,
+    destinations: generateDestinations,
+    tours: generateTours,
+    booking: generateBooking,
+    'music-hero': generateMusicHero,
+    albums: generateAlbums,
+    events: generateEvents,
+    'event-hero': generateEventHero,
+    schedule: generateSchedule,
+    speakers: generateSpeakers,
+    register: generateRegister,
+    properties: generateProperties,
+    search: generateSearch,
+    tokenomics: generateTokenomics,
+    roadmap: generateRoadmap,
+    'problem-solution': generateProblemSolution,
+    product: generateProduct,
   };
 
   return generators[type]?.(config) || '';
@@ -473,6 +566,483 @@ const generateCategories = (config: SiteConfig): string => `
           <div class="text-3xl mb-2">${['💻', '💼', '🎨', '📱', '⚙️', '✨', '📚', '🔬'][i]}</div>
           <h3 class="font-bold">${cat}</h3>
         </a>
+      `).join('')}
+    </div>
+  </div>
+</section>
+`;
+
+const generateGameHero = (config: SiteConfig): string => `
+<header class="min-h-screen flex items-center justify-center px-6" style="background: linear-gradient(135deg, ${config.colors.primary} 0%, ${config.colors.secondary} 100%);">
+  <div class="text-center max-w-4xl text-white">
+    <h1 class="text-7xl md:text-8xl font-black mb-6 animate-pulse">🎮 ${config.title}</h1>
+    <p class="text-2xl mb-8">${config.description}</p>
+    <button class="bg-white text-gray-900 px-12 py-5 rounded-full text-2xl font-bold hover:scale-110 transition transform shadow-2xl">
+      ИГРАТЬ СЕЙЧАС
+    </button>
+  </div>
+</header>
+`;
+
+const generateGameCanvas = (config: SiteConfig): string => `
+<section id="game" class="py-20 px-6" style="background-color: ${config.colors.background};">
+  <div class="max-w-4xl mx-auto">
+    <canvas id="gameCanvas" class="w-full border-4 rounded-2xl shadow-2xl mx-auto" style="border-color: ${config.colors.primary}; background: #000; height: 500px;"></canvas>
+    <div class="flex justify-center gap-4 mt-8">
+      <button onclick="startGame()" style="background-color: ${config.colors.primary}" class="text-white px-8 py-4 rounded-xl text-xl font-bold hover:scale-105 transition">
+        ▶ Старт
+      </button>
+      <button onclick="pauseGame()" class="bg-gray-300 px-8 py-4 rounded-xl text-xl font-bold hover:bg-gray-400 transition">
+        ⏸ Пауза
+      </button>
+      <button onclick="resetGame()" class="bg-gray-300 px-8 py-4 rounded-xl text-xl font-bold hover:bg-gray-400 transition">
+        🔄 Рестарт
+      </button>
+    </div>
+  </div>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth;
+    canvas.height = 500;
+    
+    let score = 0;
+    let gameRunning = false;
+    let player = { x: canvas.width / 2, y: canvas.height - 50, width: 50, height: 50, speed: 5 };
+    let obstacles = [];
+    
+    function drawPlayer() {
+      ctx.fillStyle = '${config.colors.primary}';
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
+    
+    function drawObstacles() {
+      obstacles.forEach(obs => {
+        ctx.fillStyle = '${config.colors.accent}';
+        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+      });
+    }
+    
+    function updateGame() {
+      if (!gameRunning) return;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      obstacles.forEach((obs, i) => {
+        obs.y += 3;
+        if (obs.y > canvas.height) {
+          obstacles.splice(i, 1);
+          score++;
+        }
+      });
+      
+      if (Math.random() < 0.02) {
+        obstacles.push({ x: Math.random() * (canvas.width - 30), y: 0, width: 30, height: 30 });
+      }
+      
+      drawPlayer();
+      drawObstacles();
+      
+      ctx.fillStyle = 'white';
+      ctx.font = '24px Arial';
+      ctx.fillText('Счет: ' + score, 20, 40);
+      
+      requestAnimationFrame(updateGame);
+    }
+    
+    function startGame() {
+      if (!gameRunning) {
+        gameRunning = true;
+        updateGame();
+      }
+    }
+    
+    function pauseGame() {
+      gameRunning = false;
+    }
+    
+    function resetGame() {
+      score = 0;
+      obstacles = [];
+      player.x = canvas.width / 2;
+      gameRunning = false;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && player.x > 0) player.x -= player.speed;
+      if (e.key === 'ArrowRight' && player.x < canvas.width - player.width) player.x += player.speed;
+    });
+  </script>
+</section>
+`;
+
+const generateLeaderboard = (config: SiteConfig): string => `
+<section id="leaderboard" class="py-20 px-6 bg-gray-900 text-white">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-12">🏆 Таблица лидеров</h2>
+    <div class="space-y-4">
+      ${[1, 2, 3, 4, 5].map(i => `
+        <div class="flex items-center justify-between p-6 bg-gray-800 rounded-xl hover:bg-gray-700 transition">
+          <div class="flex items-center gap-4">
+            <span class="text-3xl font-bold" style="color: ${config.colors.accent}">#${i}</span>
+            <span class="text-xl">Игрок ${i}</span>
+          </div>
+          <span class="text-2xl font-bold" style="color: ${config.colors.primary}">${(6 - i) * 1000} очков</span>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</section>
+`;
+
+const generateInstructions = (config: SiteConfig): string => `
+<section id="instructions" class="py-20 px-6" style="background-color: ${config.colors.background};">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-12">📖 Как играть</h2>
+    <div class="grid md:grid-cols-2 gap-8">
+      ${[
+        { icon: '⌨️', title: 'Управление', desc: 'Используйте стрелки на клавиатуре' },
+        { icon: '🎯', title: 'Цель', desc: 'Набрать максимальное количество очков' },
+        { icon: '⚡', title: 'Скорость', desc: 'Игра ускоряется со временем' },
+        { icon: '💎', title: 'Бонусы', desc: 'Собирайте специальные предметы' },
+      ].map(inst => `
+        <div class="p-6 bg-white rounded-2xl shadow-lg text-center">
+          <div class="text-5xl mb-4">${inst.icon}</div>
+          <h3 class="text-xl font-bold mb-2">${inst.title}</h3>
+          <p class="text-gray-600">${inst.desc}</p>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</section>
+`;
+
+const generateAppHero = (config: SiteConfig): string => `
+<header class="min-h-screen flex items-center justify-center px-6" style="background: linear-gradient(to bottom right, ${config.colors.background}, ${config.colors.primary}20);">
+  <div class="max-w-5xl w-full grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <h1 class="text-6xl font-bold mb-6">${config.title}</h1>
+      <p class="text-xl mb-8 opacity-80">${config.description}</p>
+      <div class="flex gap-4">
+        <button style="background-color: ${config.colors.primary}" class="text-white px-8 py-4 rounded-xl text-lg font-semibold hover:opacity-90">
+          Начать бесплатно
+        </button>
+        <button class="border-2 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-gray-50">
+          Демо
+        </button>
+      </div>
+    </div>
+    <div class="h-96 rounded-2xl shadow-2xl" style="background: linear-gradient(135deg, ${config.colors.secondary}, ${config.colors.accent});"></div>
+  </div>
+</header>
+`;
+
+const generateAppInterface = (config: SiteConfig): string => `
+<section id="interface" class="py-20 px-6" style="background-color: ${config.colors.background};">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-16">Интерфейс приложения</h2>
+    <div class="bg-white rounded-3xl shadow-2xl p-8 border-4" style="border-color: ${config.colors.primary}">
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <input type="text" placeholder="Введите данные..." class="px-6 py-4 border-2 rounded-xl text-lg focus:outline-none focus:border-purple-500">
+        <select class="px-6 py-4 border-2 rounded-xl text-lg focus:outline-none focus:border-purple-500">
+          <option>Выберите опцию</option>
+          <option>Вариант 1</option>
+          <option>Вариант 2</option>
+        </select>
+        <button style="background-color: ${config.colors.primary}" class="text-white py-4 rounded-xl text-lg font-semibold hover:opacity-90">
+          Выполнить
+        </button>
+      </div>
+      <div class="h-64 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 text-xl">
+        Результат появится здесь
+      </div>
+    </div>
+  </div>
+</section>
+`;
+
+const generateDestinations = (config: SiteConfig): string => `
+<section id="destinations" class="py-20 px-6">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-16">Популярные направления</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      ${['Париж', 'Токио', 'Нью-Йорк', 'Рим', 'Бали', 'Дубай'].map((city, i) => `
+        <div class="group cursor-pointer">
+          <div class="h-80 rounded-2xl overflow-hidden mb-4 relative">
+            <div class="absolute inset-0 bg-gradient-to-br from-${['blue', 'pink', 'yellow', 'red', 'green', 'purple'][i]}-400 to-${['purple', 'red', 'orange', 'pink', 'blue', 'indigo'][i]}-600"></div>
+            <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+              <h3 class="text-3xl font-bold">${city}</h3>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</section>
+`;
+
+const generateTours = (config: SiteConfig): string => `
+<section id="tours" class="py-20 px-6 bg-gray-50">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-16">Туры</h2>
+    <div class="grid md:grid-cols-2 gap-8">
+      ${[1, 2, 3, 4].map(i => `
+        <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition">
+          <div class="h-64 bg-gradient-to-br from-blue-${300 + i * 100} to-purple-${400 + i * 100}"></div>
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-2">Тур ${i}</h3>
+            <p class="text-gray-600 mb-4">${5 + i} дней / ${4 + i} ночей</p>
+            <div class="flex justify-between items-center">
+              <span class="text-3xl font-bold" style="color: ${config.colors.primary}">от ${(i + 1) * 30000}₽</span>
+              <button style="background-color: ${config.colors.primary}" class="text-white px-6 py-2 rounded-lg">Забронировать</button>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</section>
+`;
+
+const generateBooking = (config: SiteConfig): string => `
+<section id="booking" class="py-20 px-6">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-12">Забронировать тур</h2>
+    <form class="bg-white p-8 rounded-2xl shadow-xl space-y-6">
+      <div class="grid md:grid-cols-2 gap-6">
+        <input type="text" placeholder="Ваше имя" class="px-6 py-4 border-2 rounded-xl focus:outline-none focus:border-purple-500">
+        <input type="email" placeholder="Email" class="px-6 py-4 border-2 rounded-xl focus:outline-none focus:border-purple-500">
+        <input type="date" class="px-6 py-4 border-2 rounded-xl focus:outline-none focus:border-purple-500">
+        <input type="number" placeholder="Количество человек" class="px-6 py-4 border-2 rounded-xl focus:outline-none focus:border-purple-500">
+      </div>
+      <button style="background-color: ${config.colors.primary}" class="w-full text-white py-4 rounded-xl text-lg font-semibold">
+        Отправить заявку
+      </button>
+    </form>
+  </div>
+</section>
+`;
+
+const generateMusicHero = (config: SiteConfig): string => `
+<header class="min-h-screen flex items-center justify-center px-6" style="background: linear-gradient(to bottom, #000, ${config.colors.primary});">
+  <div class="text-center text-white">
+    <h1 class="text-8xl font-black mb-6">🎵 ${config.title}</h1>
+    <p class="text-2xl mb-8 opacity-90">${config.description}</p>
+    <button style="background-color: ${config.colors.accent}" class="text-black px-12 py-5 rounded-full text-xl font-bold hover:scale-105 transition">
+      ▶ СЛУШАТЬ
+    </button>
+  </div>
+</header>
+`;
+
+const generateAlbums = (config: SiteConfig): string => `
+<section id="albums" class="py-20 px-6 bg-black text-white">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-16">Альбомы</h2>
+    <div class="grid md:grid-cols-4 gap-6">
+      ${[1, 2, 3, 4, 5, 6, 7, 8].map(i => `
+        <div class="group cursor-pointer">
+          <div class="aspect-square bg-gradient-to-br from-purple-${400 + i * 50} to-pink-${500 + i * 50} rounded-xl mb-3 hover:scale-105 transition"></div>
+          <h3 class="font-bold">Альбом ${i}</h3>
+          <p class="text-sm text-gray-400">202${i}</p>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</section>
+`;
+
+const generateEvents = (config: SiteConfig): string => `
+<section id="events" class="py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-16">Концерты</h2>
+    <div class="space-y-4">
+      ${[1, 2, 3, 4].map(i => `
+        <div class="flex justify-between items-center p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition">
+          <div>
+            <h3 class="text-2xl font-bold">${i} мая 2024</h3>
+            <p class="text-gray-600">Город ${i}, Арена</p>
+          </div>
+          <button style="background-color: ${config.colors.primary}" class="text-white px-8 py-3 rounded-lg font-semibold">
+            Билеты
+          </button>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</section>
+`;
+
+const generateEventHero = (config: SiteConfig): string => `
+<header class="min-h-screen flex items-center justify-center px-6" style="background: linear-gradient(135deg, ${config.colors.primary}, ${config.colors.secondary});">
+  <div class="text-center text-white max-w-4xl">
+    <h1 class="text-7xl font-black mb-6">${config.title}</h1>
+    <p class="text-2xl mb-4">${config.description}</p>
+    <p class="text-3xl font-bold mb-8">📅 15-17 июня 2024</p>
+    <button class="bg-white text-gray-900 px-12 py-5 rounded-xl text-xl font-bold hover:scale-105 transition">
+      Зарегистрироваться
+    </button>
+  </div>
+</header>
+`;
+
+const generateSchedule = (config: SiteConfig): string => `
+<section id="schedule" class="py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-16">Программа</h2>
+    <div class="space-y-6">
+      ${[
+        { time: '09:00', title: 'Регистрация', desc: 'Приветственный кофе' },
+        { time: '10:00', title: 'Открытие', desc: 'Вступительное слово' },
+        { time: '11:00', title: 'Доклад 1', desc: 'Основная тема' },
+        { time: '12:30', title: 'Обед', desc: 'Нетворкинг' },
+        { time: '14:00', title: 'Панельная дискуссия', desc: 'Q&A сессия' },
+      ].map((item, i) => `
+        <div class="flex gap-6 items-start p-6 bg-white rounded-xl shadow-lg">
+          <div class="text-2xl font-bold" style="color: ${config.colors.primary}">${item.time}</div>
+          <div>
+            <h3 class="text-xl font-bold mb-1">${item.title}</h3>
+            <p class="text-gray-600">${item.desc}</p>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</section>
+`;
+
+const generateSpeakers = (config: SiteConfig): string => generateTeam(config).replace('Наша команда', 'Спикеры');
+
+const generateRegister = (config: SiteConfig): string => `
+<section id="register" class="py-20 px-6" style="background-color: ${config.colors.primary};">
+  <div class="max-w-2xl mx-auto text-center text-white">
+    <h2 class="text-5xl font-bold mb-6">Зарегистрируйтесь</h2>
+    <p class="text-xl mb-8">Количество мест ограничено!</p>
+    <form class="bg-white p-8 rounded-2xl text-left space-y-4">
+      <input type="text" placeholder="Имя и фамилия" class="w-full px-6 py-4 border-2 rounded-xl focus:outline-none">
+      <input type="email" placeholder="Email" class="w-full px-6 py-4 border-2 rounded-xl focus:outline-none">
+      <input type="tel" placeholder="Телефон" class="w-full px-6 py-4 border-2 rounded-xl focus:outline-none">
+      <button style="background-color: ${config.colors.primary}" class="w-full text-white py-4 rounded-xl text-lg font-bold">
+        Зарегистрироваться
+      </button>
+    </form>
+  </div>
+</section>
+`;
+
+const generateProperties = (config: SiteConfig): string => generateProducts(config).replace('Наши товары', 'Объекты недвижимости').replace('Товар', 'Квартира');
+
+const generateSearch = (config: SiteConfig): string => `
+<section id="search" class="py-20 px-6 bg-gray-50">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-12">Поиск недвижимости</h2>
+    <div class="bg-white p-8 rounded-2xl shadow-xl">
+      <div class="grid md:grid-cols-4 gap-4 mb-6">
+        <select class="px-6 py-4 border-2 rounded-xl">
+          <option>Тип</option>
+          <option>Квартира</option>
+          <option>Дом</option>
+        </select>
+        <select class="px-6 py-4 border-2 rounded-xl">
+          <option>Комнат</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3+</option>
+        </select>
+        <input type="text" placeholder="Район" class="px-6 py-4 border-2 rounded-xl">
+        <input type="text" placeholder="Цена до" class="px-6 py-4 border-2 rounded-xl">
+      </div>
+      <button style="background-color: ${config.colors.primary}" class="w-full text-white py-4 rounded-xl text-lg font-bold">
+        Найти
+      </button>
+    </div>
+  </div>
+</section>
+`;
+
+const generateTokenomics = (config: SiteConfig): string => `
+<section id="tokenomics" class="py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-16">Токеномика</h2>
+    <div class="grid md:grid-cols-2 gap-12">
+      <div class="space-y-6">
+        ${[
+          { label: 'Total Supply', value: '1,000,000,000' },
+          { label: 'Liquidity', value: '40%' },
+          { label: 'Team', value: '15%' },
+          { label: 'Marketing', value: '20%' },
+          { label: 'Community', value: '25%' },
+        ].map(item => `
+          <div class="flex justify-between items-center p-4 bg-gray-100 rounded-xl">
+            <span class="font-semibold">${item.label}</span>
+            <span class="text-2xl font-bold" style="color: ${config.colors.primary}">${item.value}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="flex items-center justify-center">
+        <div class="w-80 h-80 rounded-full" style="background: conic-gradient(${config.colors.primary} 0% 40%, ${config.colors.secondary} 40% 55%, ${config.colors.accent} 55% 75%, #e5e7eb 75% 100%);"></div>
+      </div>
+    </div>
+  </div>
+</section>
+`;
+
+const generateRoadmap = (config: SiteConfig): string => `
+<section id="roadmap" class="py-20 px-6 bg-gray-900 text-white">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-16">Roadmap</h2>
+    <div class="space-y-8">
+      ${['Q1 2024: Launch', 'Q2 2024: Exchange Listings', 'Q3 2024: NFT Collection', 'Q4 2024: Metaverse Integration'].map((phase, i) => `
+        <div class="flex gap-6 items-start">
+          <div class="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold" style="background-color: ${config.colors.primary}">
+            ${i + 1}
+          </div>
+          <div class="flex-1 p-6 bg-gray-800 rounded-xl">
+            <h3 class="text-2xl font-bold mb-2">${phase.split(':')[0]}</h3>
+            <p class="text-gray-400">${phase.split(':')[1]}</p>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</section>
+`;
+
+const generateProblemSolution = (config: SiteConfig): string => `
+<section id="problem" class="py-20 px-6">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
+    <div class="p-8 bg-red-50 rounded-2xl">
+      <h2 class="text-4xl font-bold mb-6 text-red-600">❌ Проблема</h2>
+      <p class="text-lg text-gray-700">Существующие решения сложны, дороги и неэффективны. Пользователи тратят слишком много времени.</p>
+    </div>
+    <div class="p-8 bg-green-50 rounded-2xl">
+      <h2 class="text-4xl font-bold mb-6 text-green-600">✅ Решение</h2>
+      <p class="text-lg text-gray-700">Наш продукт упрощает процесс в 10 раз, экономит деньги и время благодаря инновационному подходу.</p>
+    </div>
+  </div>
+</section>
+`;
+
+const generateProduct = (config: SiteConfig): string => `
+<section id="product" class="py-20 px-6 bg-gray-50">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-5xl font-bold text-center mb-16">Наш продукт</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      ${[
+        { icon: '⚡', title: 'Быстро', desc: 'Работает в 10 раз быстрее' },
+        { icon: '🔒', title: 'Безопасно', desc: 'Enterprise-grade security' },
+        { icon: '🎯', title: 'Точно', desc: '99.9% accuracy rate' },
+        { icon: '💰', title: 'Выгодно', desc: 'Экономия до 70%' },
+        { icon: '🌐', title: 'Глобально', desc: 'Работает в 150+ странах' },
+        { icon: '📱', title: 'Удобно', desc: 'Интуитивный интерфейс' },
+      ].map(item => `
+        <div class="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition">
+          <div class="text-6xl mb-4">${item.icon}</div>
+          <h3 class="text-2xl font-bold mb-3">${item.title}</h3>
+          <p class="text-gray-600">${item.desc}</p>
+        </div>
       `).join('')}
     </div>
   </div>
